@@ -477,6 +477,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/blog/" itemprop="url" rel="index">
+                    <span itemprop="name">blog</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -506,7 +528,49 @@
       
         
           
-            
+            <p>自己有服务器就可以很方便的部署博客这里选用hexo</p>
+<h2 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h2><blockquote><p>安装nodejs，Git</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt update</span><br><span class="line">$ sudo apt upgrande</span><br><span class="line">$ sudo apt install git</span><br><span class="line">$ sudo apt install nodejs</span><br><span class="line">$ node -v</span><br><span class="line">$ git -v</span><br></pre></td></tr></table></figure></blockquote>
+<blockquote><p>安装nginx<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt install nginx </span><br><span class="line">$ nginx -v</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote><p>安装hexo<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo </span><br><span class="line">$ hexo</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="创建Git环境"><a href="#创建Git环境" class="headerlink" title="创建Git环境"></a>创建Git环境</h2><blockquote><p>参考链接：<a href="https://git-scm.com/book/zh/v2/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-%E9%85%8D%E7%BD%AE%E6%9C%8D%E5%8A%A1%E5%99%A8" target="_blank" rel="noopener">git配置</a></p>
+</blockquote>
+<h3 id="增加一个Git用户"><a href="#增加一个Git用户" class="headerlink" title="增加一个Git用户"></a>增加一个Git用户</h3><blockquote><p> 添加用户/设置密码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ adduser git </span><br><span class="line">$ password git</span><br></pre></td></tr></table></figure></blockquote>
+<h3 id="创建证书"><a href="#创建证书" class="headerlink" title="创建证书"></a>创建证书</h3><blockquote><p> 切换到git用户-&gt;创建.ssh目录-&gt;创建authorized_keys公钥保存文件-&gt;设置权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ su git </span><br><span class="line">$ mkdir .ssh &amp;&amp; chmod 700 .ssh</span><br><span class="line">$ touch .ssh/authorized_keys</span><br><span class="line">$ chmod 600 .ssh/authorized_keys</span><br></pre></td></tr></table></figure></blockquote>
+<h3 id="创建Git仓库"><a href="#创建Git仓库" class="headerlink" title="创建Git仓库"></a>创建Git仓库</h3><blockquote><p>创建一个名为blog的git仓库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir /var/repo</span><br><span class="line">$ cd /var/repo</span><br><span class="line">$ git init –bare blog.git</span><br></pre></td></tr></table></figure></blockquote>
+<h3 id="配置git-hooks"><a href="#配置git-hooks" class="headerlink" title="配置git hooks"></a>配置git hooks</h3><blockquote><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ vim /var/repo/blog.git/hooks/post-receive</span><br><span class="line"></span><br></pre></td></tr></table></figure><br>追加<br>    git –work-tree=/var/www/hexo –git-dir=/var/repo/blog.git checkout -f<br>退出设置权限<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ chmod +x /var/repo/blog.git/hooks/post-receive</span><br></pre></td></tr></table></figure></blockquote>
+<h3 id="改变-git权限"><a href="#改变-git权限" class="headerlink" title="改变*.git权限"></a>改变*.git权限</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ chown -R git:git blog.git</span><br></pre></td></tr></table></figure>
+<h3 id="创建静态文件目录并将2-3步骤生成的git仓库链接到静态文件目录下-git自动同步到hexo"><a href="#创建静态文件目录并将2-3步骤生成的git仓库链接到静态文件目录下-git自动同步到hexo" class="headerlink" title="创建静态文件目录并将2.3步骤生成的git仓库链接到静态文件目录下(git自动同步到hexo)"></a>创建静态文件目录并将2.3步骤生成的git仓库链接到静态文件目录下(git自动同步到hexo)</h3><ul>
+<li>创建静态文件目录（文章网页）：mkdir /var/www/hexo</li>
+<li>链接git仓库：chown -R git:git /var/www/hexo</li>
+<li>配置权限：chmod -R 755 /var/www/hexo</li>
+</ul>
+<h3 id="禁用GIT用户的SHELL-登录权限配置（为了安全）"><a href="#禁用GIT用户的SHELL-登录权限配置（为了安全）" class="headerlink" title="禁用GIT用户的SHELL 登录权限配置（为了安全）"></a>禁用GIT用户的SHELL 登录权限配置（为了安全）</h3><ul>
+<li><p>首先你必须确保 git-shell 已存在于 /etc/shells 文件中</p>
+</li>
+<li><p>使用命令which git-shell判断系统是否安装了git-shell。如果已经安装，则返回git-shell的安装目录，如：/usr/bin/git-shell；如果未安装则需要安装git-shell命令，安装命令：sudo apt install git<br>-判断shells文件是否存在，判断命令：cat /etc/shells<br>如果文件不存在或没有/usr/bin/git-shell，则需要使用vim增加这个路径：<br>sudo vim /etc/shells，在最后一行添加git-shell路径</p>
+<h1 id="etc-shells-valid-login-shells"><a href="#etc-shells-valid-login-shells" class="headerlink" title="/etc/shells: valid login shells"></a>/etc/shells: valid login shells</h1><p>/bin/sh<br>/bin/dash<br>/bin/bash<br>/bin/rbash<br>/usr/bin/tmux<br>/usr/bin/screen<br>/usr/bin/git-shell # 添加你的git-shell<br><code>`</code></p>
+</li>
+<li><p>现在你可以使用 chsh 命令修改任一系统用户的shell权限了<br>现在我们修改第一步中创建的git用户的登录权限，禁止git用户使用shell权限：<br>终端中输入sudo chsh git</p>
+</li>
+<li><p>然后在Login Shell [/bin/bash]: 后输入git-shell路径/usr/bin/git-shell</p>
+</li>
+<li><p>修改完成后验证： vim /etc/passwd找到类似git:x:1000:1000:,,,:/home/git:/usr/bin/git-shell，看看git用户是否是以git-shell结尾</p>
+</li>
+<li><p>这样，git用户就只能使用SSH连接对Git仓库进行推送和拉取操作，而不能登录机器并取得普通shell命令</p>
+</li>
+</ul>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>当上述步骤都完成后，我们就可以测试下git服务器是否部署成功，最简单的方法便是使用clone来校验<br>用户电脑 clone操作git clone git@服务器ip:/var/repo/blog.git<br>将出现 服务器信息（如果有）或者clone成功</p>
+<h2 id="hexo配置"><a href="#hexo配置" class="headerlink" title="hexo配置"></a>hexo配置</h2><p>打开hexo博客目录，编辑_config.yml文件<br>修改repository为：<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository:  git@yourIp:/var/repo/blog.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure></p>
+<h2 id="nginx配置"><a href="#nginx配置" class="headerlink" title="nginx配置"></a>nginx配置</h2><h3 id="修改nginx的设置"><a href="#修改nginx的设置" class="headerlink" title="修改nginx的设置"></a>修改nginx的设置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vim /etc/nginx/sites-available/default</span><br></pre></td></tr></table></figure>
+<h3 id="将其中的-ROOT-指令指向-var-www-hexo-目录（也就是GIT钩子目录）"><a href="#将其中的-ROOT-指令指向-var-www-hexo-目录（也就是GIT钩子目录）" class="headerlink" title="将其中的 ROOT 指令指向 /var/www/hexo 目录（也就是GIT钩子目录）"></a>将其中的 ROOT 指令指向 /var/www/hexo 目录（也就是GIT钩子目录）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    listen [::]:80;</span><br><span class="line">    root /var/www/hexo; # 修改的地方</span><br><span class="line">    server_name laoyuyu.me www.laoyuyu.me; # 如果需要改域名访问，修改server_name 为域名便可</span><br><span class="line">    location / &#123;</span><br><span class="line">            # First attempt to serve request as file, then</span><br><span class="line">            # as directory, then fall back to displaying a 404.</span><br><span class="line">            try_files $uri $uri/ =404;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="重启nginx"><a href="#重启nginx" class="headerlink" title="重启nginx"></a>重启nginx</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ service nginx restart </span><br></pre></td></tr></table></figure>
+
           
         
       
@@ -1710,7 +1774,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1721,7 +1785,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
